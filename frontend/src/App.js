@@ -1,6 +1,12 @@
+import React from 'react';
+import './App.css';
+import Frog from './Components/Frog/Frog';
+
 function App() {
   return (
-    <h1>Hello from App</h1>
+    <div>
+      <Frog />
+    </div>
   );
 }
 
