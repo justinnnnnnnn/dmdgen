@@ -15,75 +15,63 @@ function Section1() {
     }
   }
 
-    const formattedDefendants = () => {
-      const filledDefendants = defendants.filter(def => def.trim() !== '');
-      switch (filledDefendants.length) {
-        case 0: return '';
-        case 1: return filledDefendants[0];
-        case 2: return filledDefendants.join(' and ');
-        default: return filledDefendants.slice(0, -1).join(', ') + ', and ' + filledDefendants.slice(-1);
-      }
-    };
+  const formattedDefendants = () => {
+    const filledDefendants = defendants.filter(def => def.trim() !== '');
+    switch (filledDefendants.length) {
+      case 0: return '';
+      case 1: return filledDefendants[0];
+      case 2: return filledDefendants.join(' and ');
+      default: return filledDefendants.slice(0, -1).join(', ') + ', and ' + filledDefendants.slice(-1);
+    }
+  };
 
-    return (
-      <div className="section1">
-        <Row type="main">
+  return (
+    <div className="section1">
+      <Row type="main">
+        <Col type="sub">
+          <label>
+            Plaintiff:
+            <input 
+              type="text" 
+              value={plaintiff} 
+              onChange={(e) => setPlaintiff(e.target.value)}
+            />
+          </label>
+        </Col>
+        <Col type="sub">
+          {plaintiff}
+        </Col>
+      </Row>
+
+      <Row type="main">
+        {"Defendants:"}
+      </Row>
+      
+      {defendants.map((defendant, index) => (
+        <Row type="main" key={index}>
           <Col type="sub">
-            <Row type="sub">
-              <label>
-                Plaintiff:
-                <input 
-                  type="text" 
-                  value={plaintiff} 
-                  onChange={(e) => setPlaintiff(e.target.value)}
-                />
-              </label>
-            </Row>
+            <label>
+              Defendant {index + 1}:
+              <input 
+                type="text"
+                value={defendant}
+                onChange={(e) => handleDefendantChange(index, e.target.value)}
+              />
+            </label>
           </Col>
           <Col type="sub">
-            <Row type="sub">
-              {plaintiff}
-            </Row>
-            <Row type="sub">
-              {plaintiff.toUpperCase()}
-            </Row>
-            <Row type="sub">
-              {plaintiff.toUpperCase()}
-            </Row>
-          </Col>
-        </Row>
-  
-        <Row type="main">
-          <Col type="sub">
-            <Row type="sub">
-              {"Defendants:"}
-            </Row>
-            {defendants.map((defendant, index) => (
-              <Row type="sub" key={index}>
-                <label>
-                  Defendant {index + 1}:
-                  <input 
-                    type="text"
-                    value={defendant}
-                    onChange={(e) => handleDefendantChange(index, e.target.value)}
-                  />
-                </label>
-              </Row>
-            ))}
-          </Col>
-          <Col type="sub">
-            <Row type="sub">
-              {formattedDefendants()}
-            </Row>
-            {defendants.map((defendant, index) => (
-              <Row type="sub" key={index}>
-                {defendant}
-              </Row>
-            ))}
+            {defendant}
           </Col>
         </Row>
-      </div>
-    );
-  }
-  
-  export default Section1;
+      ))}
+
+      <Row type="main">
+        <Col type="sub">
+          {formattedDefendants()}
+        </Col>
+      </Row>
+    </div>
+  );
+}
+
+export default Section1;
