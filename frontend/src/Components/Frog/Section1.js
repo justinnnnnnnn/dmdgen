@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import Row from './Row';
-import Col from './Col';
+import MainRow from './MainRow';
+import MainCol from './MainCol';
+import ChildRow from './ChildRow';
+import ChildCol from './ChildCol';
+import './grid.css'
 
 function Section1() {
   const [plaintiff, setPlaintiff] = useState('');
@@ -26,52 +29,60 @@ function Section1() {
   };
 
   return (
-    <div className="section1">
-      <Row type="main">
-        <Col type="sub">
-          <label>
-            Plaintiff:
-            <input 
-              type="text" 
-              value={plaintiff} 
-              onChange={(e) => setPlaintiff(e.target.value)}
-            />
-          </label>
-        </Col>
-        <Col type="sub">
-          {plaintiff}
-        </Col>
-      </Row>
-
-      <Row type="main">
-        {"Defendants:"}
-      </Row>
+    <>
+      <MainRow>
+        <MainCol>
+          <ChildRow>
+            <ChildCol>
+              <label>
+                Plaintiff:
+                <input 
+                  type="text" 
+                  value={plaintiff} 
+                  onChange={(e) => setPlaintiff(e.target.value)}
+                />
+              </label>
+            </ChildCol>
+            <ChildCol>
+              {plaintiff}
+            </ChildCol>
+          </ChildRow>
+        </MainCol>
+      </MainRow>
       
-      {defendants.map((defendant, index) => (
-        <Row type="main" key={index}>
-          <Col type="sub">
-            <label>
-              Defendant {index + 1}:
-              <input 
-                type="text"
-                value={defendant}
-                onChange={(e) => handleDefendantChange(index, e.target.value)}
-              />
-            </label>
-          </Col>
-          <Col type="sub">
-            {defendant}
-          </Col>
-        </Row>
-      ))}
+      <MainRow>
+        <MainCol>
+          <ChildRow>
+            <ChildCol>
+              {"Defendants:"}
+            </ChildCol>
+            <ChildCol>
+              {formattedDefendants()}
+            </ChildCol>
+          </ChildRow>
 
-      <Row type="main">
-        <Col type="sub">
-          {formattedDefendants()}
-        </Col>
-      </Row>
-    </div>
+          {defendants.map((defendant, index) => (
+            <ChildRow key={index}>
+              <ChildCol>
+                <label>
+                  Defendant {index + 1}:
+                  <input 
+                    type="text"
+                    value={defendant}
+                    onChange={(e) => handleDefendantChange(index, e.target.value)}
+                  />
+                </label>
+              </ChildCol>
+              <ChildCol>
+                {defendant}
+              </ChildCol>
+            </ChildRow>
+          ))}
+        </MainCol>
+      </MainRow>
+    </>
   );
 }
+
 
 export default Section1;

@@ -1,0 +1,30 @@
+.main-row {
+  display: grid;
+}
+
+.main-col {
+  display: grid;
+}
+
+.child-row {
+  display: flex;
+}
+
+.child-col {
+  border: 1px solid black; /* just for better visualization */
+  padding: 8px;
+  flex: 1 0 50%; /* flex-grow, flex-shrink, and flex-basis combined */
+  width: 500px;
+  word-wrap: break-word
+
+}
+
+
+/* optional, if you want to add some space between the cols and rows */
+.child-row:not(:last-child) {
+  margin-bottom: 16px;
+}
+
+.main-col:not(:last-child) {
+  margin-right: 16px;
+}
