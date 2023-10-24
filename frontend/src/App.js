@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import Frog from './Components/Frog/Frog';
+import {Frog} from './Components/Frog/Frog';
 
 function App() {
   return (

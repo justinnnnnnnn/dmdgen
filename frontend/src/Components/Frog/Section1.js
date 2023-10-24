@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import MainRow from './MainRow';
 import MainCol from './MainCol';
 import ChildRow from './ChildRow';
 import ChildCol from './ChildCol';
 import './grid.css'
+import { FrogContext } from './Frog';
 
 function Section1() {
-  const [plaintiff, setPlaintiff] = useState('');
+  
+  // const [plaintiff, setPlaintiff] = useState('');
+  const { plaintiff, setPlaintiff } = useContext(FrogContext);
   const [defendants, setDefendants] = useState(['']);
 
   const handleDefendantChange = (index, value) => {
@@ -30,6 +33,15 @@ function Section1() {
 
   return (
     <>
+    <MainRow>
+        <MainCol>
+          <ChildRow>
+            <ChildCol>
+              <h3>Section 1, Plaintiff and Defendant(s)</h3>
+            </ChildCol>
+          </ChildRow>
+        </MainCol>
+      </MainRow>
       <MainRow>
         <MainCol>
           <ChildRow>
