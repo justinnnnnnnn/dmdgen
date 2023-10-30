@@ -5,15 +5,15 @@ import ChildRow from './ChildRow';
 import ChildCol from './ChildCol';
 
 function Sect2_13() {
-  const [substanceUse, setSubstanceUse] = useState([
-    { person: '', address: '', phoneNumber: '', substance: '', location: '', time: '', presentPeople: '', prescribedBy: '', reason: '' }
-  ]);
+  const [substanceUse, setSubstanceUse] = useState([]);
+  const [showDefault, setShowDefault] = useState(true);
 
   const addSubstanceUse = () => {
     setSubstanceUse([
       ...substanceUse,
       { person: '', address: '', phoneNumber: '', substance: '', location: '', time: '', presentPeople: '', prescribedBy: '', reason: '' }
     ]);
+    setShowDefault(false);
   };
 
   const updateSubstanceUse = (index, field, value) => {
@@ -27,7 +27,7 @@ function Sect2_13() {
   };
 
   const renderResponse = () => {
-    if (substanceUse.length === 1 && Object.values(substanceUse[0]).every(v => v === '')) {
+    if (showDefault) {
       return "Plaintiff does not recall taking or using any drugs, alcohol, or medications before the INCIDENT.";
     }
 

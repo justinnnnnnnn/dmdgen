@@ -5,15 +5,15 @@ import ChildRow from './ChildRow';
 import ChildCol from './ChildCol';
 
 function Sect2_12() {
-  const [disabilities, setDisabilities] = useState([
-    { person: '', address: '', phoneNumber: '', natureOfDisability: '', mannerOfContribution: '' }
-  ]);
+  const [disabilities, setDisabilities] = useState([]);
+  const [showDefault, setShowDefault] = useState(true);
 
   const addDisability = () => {
     setDisabilities([
       ...disabilities,
       { person: '', address: '', phoneNumber: '', natureOfDisability: '', mannerOfContribution: '' }
     ]);
+    setShowDefault(false);
   };
 
   const updateDisability = (index, field, value) => {
@@ -27,20 +27,15 @@ function Sect2_12() {
   };
 
   const renderResponse = () => {
-    if (disabilities.length === 1 && Object.values(disabilities[0]).every(v => v === '')) {
+    if (showDefault) {
       return "Not to Plaintiff's knowledge.";
     }
 
-    return disabilities.map((disability, index) => {
-      if (Object.values(disability).some(v => v !== '')) {
-        return (
-          <div key={index}>
-            {disability.person}, {disability.address}. {disability.phoneNumber}, with {disability.natureOfDisability} {disability.mannerOfContribution}
-          </div>
-        );
-      }
-      return null;
-    });
+    return disabilities.map((disability, index) => (
+      <div key={index}>
+        {disability.person}, {disability.address}. {disability.phoneNumber}, with {disability.natureOfDisability} {disability.mannerOfContribution}
+      </div>
+    ));
   };
 
   return (
@@ -99,7 +94,7 @@ function Sect2_12() {
               </div>
             ))}
             <button type="button" onClick={addDisability}>
-              Add Another Person
+              Add Person
             </button>
           </ChildCol>
           <ChildCol>

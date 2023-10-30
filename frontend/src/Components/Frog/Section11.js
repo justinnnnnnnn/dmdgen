@@ -1,30 +1,28 @@
-import React, { useState, useContext } from 'react';
-import { FrogContext } from './Frog';
+import React, { useState } from 'react';
 import MainRow from './MainRow';
 import MainCol from './MainCol';
 import ChildRow from './ChildRow';
 import ChildCol from './ChildCol';
-import Sect4_1 from './Sect4_1'
-import Sect4_2 from './Sect4_2'
+import Sect11_1 from './Sect11_1.js'
+import Sect11_2 from './Sect11_2.js'
 
-
-function Section4() {  
+function Section11() {  
   return (
     <>
       <MainRow>
         <MainCol>
           <ChildRow>
             <ChildCol>
-              <h3>4.0 Insurance</h3>
+              <h3>Section 11: Other Claims and Previous Claims</h3>
             </ChildCol>
           </ChildRow>
         </MainCol>
       </MainRow>
-      <Sect4_1/>
-      <Sect4_2/>
+      <Sect11_1/>
+      <Sect11_2/>
     </>
   );
   
   
 }
-export default Section4;
+export default Section11;

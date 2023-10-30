@@ -1,4 +1,5 @@
 import React from 'react';
+import './sections.css'
 
 function Section({ children }) {
     return (
