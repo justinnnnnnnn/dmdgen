@@ -9,6 +9,10 @@ import Section8 from './Section8'
 import Section9 from './Section9'
 import Section10 from './Section10'
 import Section11 from './Section11'
+import Section12 from './Section12'
+import Section14 from './Section14'
+import Section17 from './Section17'
+import Section20 from './Section20'
 
 const FrogContext = React.createContext();
 
@@ -28,6 +32,9 @@ function Frog() {
                     <Section9 />
                     <Section10 />
                     <Section11 />
+                    <Section12 />
+                    <Section14 />
+                    <Section17 />
                 </Section>
             </div>
         </FrogContext.Provider>
