@@ -22,7 +22,7 @@ function Section20_1() {
             <div>
               <label>Date: </label>
               <input
-                type="date"
+                type="text"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
               />
@@ -30,7 +30,7 @@ function Section20_1() {
             <div>
               <label>Time: </label>
               <input
-                type="time"
+                type="text"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
               />

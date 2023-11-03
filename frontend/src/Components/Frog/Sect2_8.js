@@ -79,7 +79,7 @@ function Sect2_8() {
                   <br />
                   <label>b) Date of Conviction: 
                     <input
-                      type="date"
+                      type="text"
                       value={conviction.date}
                       onChange={(e) => handleConvictionChange(index, 'date', e.target.value)}
                     />

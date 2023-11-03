@@ -1,40 +1,35 @@
-// import React from 'react';
-// import './App.css';
-// import {Frog} from './Components/Frog/Frog';
-
-// function App() {
-//   return (
-//     <div>
-//       <Frog />
-//     </div>
-//   );
-// }
-
-// export default App;
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { Frog } from './Components/Frog/Frog';
+// import { Frog } from './Components/Frog/Frog';
 import { Doc } from './Components/Doc/Doc1';
+import TestFrog from './Components/TestFrog/TestFrog';
+import CreateFrog from './Components/TestFrog/CreateFrog'; // Adjust the import path as necessary
+import FrogsIndex from './Components/TestFrog/FrogsIndex'; // Adjust the import path as necessary
 
 function App() {
   return (
     <Router>
       <div>
         <Routes>
-          <Route path="/frog" element={<Frog />} />
+          <Route path="/frogs" element={<FrogsIndex />} />
+          <Route path="/frogs/new" element={<CreateFrog />} />
+          <Route path="/frogs/:id" element={<TestFrog />} />
+          {/* <Route path="/frog" element={<Frog />} /> */}
           <Route path="/doc" element={<Doc />} />
-          {/* <Route path="/another-route" element=Add another component here /> */}
-          {/* Add more routes as needed */}
-          <Route path="/" element={
-            /* This is the default route. Add a component or some content here */
-            <div>Welcome to the home page!</div>
-          } />
+          <Route path="/" element={<div>Welcome to the home page!</div>} />
         </Routes>
       </div>
       <div>
-      <Link to="/frog">Go to Frog Page</Link>
-      <Link to="/doc">Go to doc Page</Link>
+        <Link to="/frogs">Frogs Index</Link>
+        <br />
+        <Link to="/frogs/new">Add New Frog</Link>
+        <br />
+        <Link to="/frog">Go to Frog Page</Link>
+        <br />
+        <Link to="/testfrog">Go to Test Frog Page</Link>
+        <br />
+        <Link to="/doc">Go to Doc Page</Link>
       </div>
     </Router>
   );

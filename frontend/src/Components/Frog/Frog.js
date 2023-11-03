@@ -35,6 +35,7 @@ function Frog() {
                     <Section12 />
                     <Section14 />
                     <Section17 />
+                    <Section20 />
                 </Section>
             </div>
         </FrogContext.Provider>
