@@ -13,10 +13,24 @@ import Section12 from './Section12'
 import Section14 from './Section14'
 import Section17 from './Section17'
 import Section20 from './Section20'
+import { useSelector, useDispatch } from 'react-redux';
+import { setFrogData } from '../../store/frog';
 
 const FrogContext = React.createContext();
 
+// import React from 'react';
+
+
+
+
 function Frog() {
+    const dispatch = useDispatch();
+    const frogData = useSelector((state) => state.frog.data);
+    
+    const handleFrogDataChange = (newData) => {
+      dispatch(setFrogData(newData));
+    };
+    
     const [plaintiff, setPlaintiff] = useState('');
 
     return (
