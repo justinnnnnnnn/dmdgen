@@ -1,3 +1,5 @@
+// frontend/src/Componennts/Frog/Section8.js
+
 import React, { useState } from 'react';
 import MainRow from './MainRow';
 import MainCol from './MainCol';
@@ -11,8 +13,6 @@ import Sect8_5 from './Sect8_5'
 import Sect8_6 from './Sect8_6'
 import Sect8_7 from './Sect8_7'
 import Sect8_8 from './Sect8_8'
-
-
 
 
 function Section8() {  

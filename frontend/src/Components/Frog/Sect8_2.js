@@ -1,3 +1,5 @@
+// frontend/src/Componenets/Frog/Sect8_2.js
+
 import React, { useState } from 'react';
 import MainRow from './MainRow';
 import MainCol from './MainCol';

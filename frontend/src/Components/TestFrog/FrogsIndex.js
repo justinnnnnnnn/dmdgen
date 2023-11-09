@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from 'react';
+// frontend/src/Componenets/TestFrog/FrogsIndex.js
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { fetchFrogs, destroyFrog } from '../../store/frog';
 
 const FrogsIndex = () => {
-  const [frogs, setFrogs] = useState([]);
+  const dispatch = useDispatch();
+  const frogs = useSelector(state => state.frog.data); // Assuming the state shape
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/frogs')
-      .then(response => response.json())
-      .then(data => setFrogs(data))
-      .catch(error => console.error('Error:', error));
-  }, []);
+    dispatch(fetchFrogs());
+  }, [dispatch]);
 
-  const deleteFrog = (id) => {
-    fetch(`http://localhost:3000/api/frogs/${id}`, {
-      method: 'DELETE',
-    })
-    .then(() => setFrogs(frogs.filter(frog => frog.id !== id)))
-    .catch(error => console.error('Error:', error));
+  const handleDeleteFrog = (id) => {
+    dispatch(destroyFrog(id));
   };
 
   return (
@@ -25,7 +22,7 @@ const FrogsIndex = () => {
       {frogs.map(frog => (
         <div key={frog.id}>
           <Link to={`/frogs/${frog.id}`}>Frog #{frog.id}</Link>
-          <button onClick={() => deleteFrog(frog.id)}>Delete</button>
+          <button onClick={() => handleDeleteFrog(frog.id)}>Delete</button>
         </div>
       ))}
       <Link to="/frogs/new">Add New Frog</Link>

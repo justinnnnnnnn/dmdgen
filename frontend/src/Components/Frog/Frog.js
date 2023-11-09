@@ -1,3 +1,5 @@
+// fronted/src/Components/Frog/Frog.js
+
 import React, {useState} from 'react';
 import Section from './Section';
 import Section1 from './Section1';
@@ -17,10 +19,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setFrogData } from '../../store/frog';
 
 const FrogContext = React.createContext();
-
-// import React from 'react';
-
-
 
 
 function Frog() {

@@ -3,55 +3,57 @@ import csrfFetch from './csrf';
 import { useDispatch, useSelector } from 'react-redux';
 
 // Action Types
-
 const API_URL = 'http://localhost:3000/api/frogs';
+const SET_FROGS = 'frog/SET_FROGS';
+const REMOVE_FROG = 'frog/REMOVE_FROG';
+const SET_SINGLE_FROG = 'frog/SET_SINGLE_FROG';
+const UPDATE_FROG_FIELD = 'frog/UPDATE_FROG_FIELD';
 
-export const getFrogs = async () => {
-  try {
-    const response = await csrfFetch(API_URL);
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    }
-    throw new Error('Network response was not ok.');
-  } catch (error) {
-    console.error('There was an error fetching the frogs!', error);
-  }
+
+
+// Action Creators
+export const setFrogs = (frogs) => ({
+  type: SET_FROGS,
+  payload: frogs
+});
+
+export const removeFrog = (id) => ({
+  type: REMOVE_FROG,
+  payload: id
+});
+
+export const setSingleFrog = (frog) => ({
+  type: SET_SINGLE_FROG,
+  payload: frog
+});
+
+export const updateFrogField = (field, value) => ({
+  type: UPDATE_FROG_FIELD,
+  payload: { field, value }
+});
+
+
+// Thunk Action Creators
+export const fetchFrogs = () => async (dispatch) => {
+  const response = await csrfFetch(API_URL);
+  const data = await response.json();
+  dispatch(setFrogs(data));
 };
 
-export const getFrog = async (id) => {
-  try {
-    const response = await csrfFetch(`${API_URL}/${id}`);
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    }
-    throw new Error('Network response was not ok.');
-  } catch (error) {
-    console.error(`There was an error fetching the frog with id ${id}!`, error);
-  }
+export const destroyFrog = (id) => async (dispatch) => {
+  await csrfFetch(`${API_URL}/${id}`, {
+    method: 'DELETE'
+  });
+  dispatch(removeFrog(id));
 };
 
-// export const createFrog = async (frogData) => {
-//   try {
-//     const response = await csrfFetch(API_URL, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({ frog: frogData }),
-//     });
-//     if (response.ok) {
-//       const data = await response.json();
-//       return data;
-//     }
-//     throw new Error('Network response was not ok.');
-//   } catch (error) {
-//     console.error('There was an error creating the frog!', error);
-//   }
-// };
+export const fetchSingleFrog = (id) => async (dispatch) => {
+  const response = await csrfFetch(`${API_URL}/${id}`);
+  const data = await response.json();
+  dispatch(setSingleFrog(data));
+};
 
-// Thunk action creator
+
 export const createFrog = (frogData) => async (dispatch, getState) => {
   try {
     const response = await csrfFetch(API_URL, {
@@ -74,74 +76,6 @@ export const createFrog = (frogData) => async (dispatch, getState) => {
   }
 };
 
-export const updateFrog = async (id, frogData) => {
-  try {
-    const response = await csrfFetch(`${API_URL}/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ frog: frogData }),
-    });
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    }
-    throw new Error('Network response was not ok.');
-  } catch (error) {
-    console.error(`There was an error updating the frog with id ${id}!`, error);
-  }
-};
-
-export const deleteFrog = async (id) => {
-  try {
-    const response = await csrfFetch(`${API_URL}/${id}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok.');
-    }
-  } catch (error) {
-    console.error(`There was an error deleting the frog with id ${id}!`, error);
-  }
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-// src/api/frogs.js
-
-const API_ENDPOINT = 'http://localhost:3000/api/frogs';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -158,16 +92,36 @@ export const setFrogData = (data) => ({
 
 // Initial State
 const initialState = {
-  data: {} // Replace this with the actual initial state structure of your frog component
+  data: [],
+  currentFrog: null,
+  formData: {}
 };
 
 // Reducer
 const frogReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_FROG_DATA:
+    case SET_FROGS:
       return {
         ...state,
         data: action.payload
+      };
+    case REMOVE_FROG:
+      return {
+        ...state,
+        data: state.data.filter(frog => frog.id !== action.payload)
+      };
+    case SET_SINGLE_FROG:
+      return {
+        ...state,
+        currentFrog: action.payload
+      };
+    case UPDATE_FROG_FIELD:
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          [action.payload.field]: action.payload.value
+        }
       };
     // Add other cases for different actions if necessary
     default:
