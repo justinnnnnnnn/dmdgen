@@ -1,9 +1,10 @@
 // frontend/src/store/frog.js
 import csrfFetch from './csrf';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Action Types
 
-const API_URL = '/frogs'; // Update with the actual URL of your Rails API if necessary
+const API_URL = 'http://localhost:3000/api/frogs';
 
 export const getFrogs = async () => {
   try {
@@ -31,7 +32,27 @@ export const getFrog = async (id) => {
   }
 };
 
-export const createFrog = async (frogData) => {
+// export const createFrog = async (frogData) => {
+//   try {
+//     const response = await csrfFetch(API_URL, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ frog: frogData }),
+//     });
+//     if (response.ok) {
+//       const data = await response.json();
+//       return data;
+//     }
+//     throw new Error('Network response was not ok.');
+//   } catch (error) {
+//     console.error('There was an error creating the frog!', error);
+//   }
+// };
+
+// Thunk action creator
+export const createFrog = (frogData) => async (dispatch, getState) => {
   try {
     const response = await csrfFetch(API_URL, {
       method: 'POST',
@@ -40,10 +61,13 @@ export const createFrog = async (frogData) => {
       },
       body: JSON.stringify({ frog: frogData }),
     });
+
     if (response.ok) {
       const data = await response.json();
+      dispatch(setFrogData(data)); // Dispatch an action to set frog data in your state
       return data;
     }
+
     throw new Error('Network response was not ok.');
   } catch (error) {
     console.error('There was an error creating the frog!', error);
@@ -96,7 +120,7 @@ export const deleteFrog = async (id) => {
 
 // src/api/frogs.js
 
-const API_ENDPOINT = 'http://localhost:3000/frogs';
+const API_ENDPOINT = 'http://localhost:3000/api/frogs';
 
 
 

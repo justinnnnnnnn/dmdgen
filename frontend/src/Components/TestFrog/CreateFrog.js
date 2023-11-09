@@ -1,56 +1,38 @@
 // frontend/src/TestFrog/CreateFrog.js
-
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux'; // Import useDispatch
 import { useNavigate } from 'react-router-dom';
+// import { createFrog } from '../store/frog'; // Import the action
+import { createFrog } from '../../store/frog';
+
 
 const CreateFrog = () => {
-  // Initialize formData with the structure of the frog data you want to create
   const [formData, setFormData] = useState({
     name: '',
     color: '',
     habitat: '',
-    // Add more fields as needed
   });
-  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch(); // Hook to dispatch actions
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     // Create the JSON structure for the frog data
     const frogData = {
-      data: JSON.stringify({
-        name: formData.name,
-        color: formData.color,
-        habitat: formData.habitat
-      })
+      data: JSON.stringify(formData)
     };
-  
-    // Log the frogData to the console before sending
-    console.log('Sending the following JSON to the server:', frogData);
-  
-    fetch('http://localhost:3000/api/frogs', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ frog: frogData })
-    })
-    .then(response => {
-      if (!response.ok) {
-        // If we get a server response but it's not OK, throw an error
-        return response.text().then(text => { throw new Error(text) });
-      }
-      return response.json();
-    })
-    .then(data => {
-      // Handle the response data
+
+    try {
+      // Dispatch the createFrog action
+      const data = await dispatch(createFrog(frogData));
       console.log(data);
-      navigate('/path-where-you-want-to-redirect'); // Navigate to a success page or list of frogs
-    })
-    .catch(error => console.error('Error:', error));
+      navigate('/path-where-you-want-to-redirect');
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
-  
-  
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
