@@ -1,3 +1,5 @@
+// frontend/src/TestFrog/CreateFrog.js
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,17 +15,25 @@ const CreateFrog = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Log the formData to the console before sending
-    console.log('Sending the following JSON to the server:', JSON.stringify(formData));
     
-    fetch('http://localhost:3000/frogs', {
+    // Create the JSON structure for the frog data
+    const frogData = {
+      data: JSON.stringify({
+        name: formData.name,
+        color: formData.color,
+        habitat: formData.habitat
+      })
+    };
+  
+    // Log the frogData to the console before sending
+    console.log('Sending the following JSON to the server:', frogData);
+  
+    fetch('http://localhost:3000/api/frogs', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        frog: formData // Assuming formData is an object with the frog attributes
-      }),
+      body: JSON.stringify({ frog: frogData })
     })
     .then(response => {
       if (!response.ok) {
@@ -35,9 +45,11 @@ const CreateFrog = () => {
     .then(data => {
       // Handle the response data
       console.log(data);
+      navigate('/path-where-you-want-to-redirect'); // Navigate to a success page or list of frogs
     })
     .catch(error => console.error('Error:', error));
   };
+  
   
 
   const handleInputChange = (event) => {

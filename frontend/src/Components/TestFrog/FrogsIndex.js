@@ -5,14 +5,14 @@ const FrogsIndex = () => {
   const [frogs, setFrogs] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3000/frogs')
+    fetch('http://localhost:3000/api/frogs')
       .then(response => response.json())
       .then(data => setFrogs(data))
       .catch(error => console.error('Error:', error));
   }, []);
 
   const deleteFrog = (id) => {
-    fetch(`http://localhost:3000/frogs/${id}`, {
+    fetch(`http://localhost:3000/api/frogs/${id}`, {
       method: 'DELETE',
     })
     .then(() => setFrogs(frogs.filter(frog => frog.id !== id)))

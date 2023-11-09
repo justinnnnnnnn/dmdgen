@@ -45,7 +45,7 @@ const TestFrog = () => {
   const navigate = useNavigate(); // Using 'navigate' for navigation
 
   useEffect(() => {
-    fetch(`http://localhost:3000/frogs/${id}`)
+    fetch(`http://localhost:3000/api/frogs/${id}`)
       .then(response => response.json())
       .then(data => {
         console.log('Fetched data:', data);
