@@ -33,15 +33,45 @@ function Section1() {
     dispatch(updateFrogField(fieldName, value));
   };
 
+  // const handleDefendantChange = (index, value) => {
+  //   const newDefendants = [...localDefendants]; // Use localDefendants
+  //   newDefendants[index] = value;
+  //   handleInputChange('defendants', newDefendants);
+  //   if (index === newDefendants.length - 1 && value) {
+  //     newDefendants.push('');
+  //     handleInputChange('defendants', newDefendants);
+  //   }
+  // };
+
   const handleDefendantChange = (index, value) => {
-    const newDefendants = [...localDefendants]; // Use localDefendants
+    let newDefendants = [...localDefendants];
+  
+    // Update the value at the current index
     newDefendants[index] = value;
-    handleInputChange('defendants', newDefendants);
-    if (index === newDefendants.length - 1 && value) {
+  
+    // Check if the current field is the last one
+    const isLastField = index === newDefendants.length - 1;
+  
+    // Add a new empty field if the current field is the last one and has at least one character
+    if (isLastField && value.trim() !== '') {
       newDefendants.push('');
-      handleInputChange('defendants', newDefendants);
     }
+  
+    // Remove empty fields except the last one
+    if (newDefendants.length > 1) {
+      newDefendants = newDefendants.filter((def, idx) => def.trim() !== '' || idx === newDefendants.length - 1);
+    }
+  
+    // Update local state and Redux store
+    setLocalDefendants(newDefendants);
+    dispatch(updateFrogField('defendants', newDefendants));
   };
+  
+  
+  
+  
+  
+  
 
   const formattedDefendants = () => {
     const filledDefendants = localDefendants.filter(def => def.trim() !== ''); // Use localDefendants
