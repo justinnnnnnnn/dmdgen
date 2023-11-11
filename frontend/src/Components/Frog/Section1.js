@@ -1,28 +1,50 @@
-import React, { useState, useContext } from 'react';
+// frotend/src/Components/Frog/Section1.js
+
+import React, { useState, useEffect } from 'react';
 import MainRow from './MainRow';
 import MainCol from './MainCol';
 import ChildRow from './ChildRow';
 import ChildCol from './ChildCol';
 import './grid.css'
-import { FrogContext } from './Frog';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateFrogField } from '../../store/frog';
 
 function Section1() {
-  
-  // const [plaintiff, setPlaintiff] = useState('');
-  const { plaintiff, setPlaintiff } = useContext(FrogContext);
-  const [defendants, setDefendants] = useState(['']);
+  const dispatch = useDispatch();
+  const currentFrog = useSelector((state) => state.frog.currentFrog) || {};
+
+  // Initialize local state
+  const [localPlaintiff, setLocalPlaintiff] = useState('');
+  const [localDefendants, setLocalDefendants] = useState(['']);
+
+  // Update local state when currentFrog changes
+  useEffect(() => {
+    if (currentFrog && currentFrog.data) {
+      setLocalPlaintiff(currentFrog.data.plaintiff || '');
+      setLocalDefendants(currentFrog.data.defendants || ['']);
+    }
+  }, [currentFrog]);
+
+  const handleInputChange = (fieldName, value) => {
+    if (fieldName === 'plaintiff') {
+      setLocalPlaintiff(value);
+    }
+    console.log(fieldName, value)
+    dispatch(updateFrogField(fieldName, value));
+  };
 
   const handleDefendantChange = (index, value) => {
-    const newDefendants = [...defendants];
+    const newDefendants = [...localDefendants]; // Use localDefendants
     newDefendants[index] = value;
-    setDefendants(newDefendants);
+    handleInputChange('defendants', newDefendants);
     if (index === newDefendants.length - 1 && value) {
-      setDefendants([...newDefendants, '']);
+      newDefendants.push('');
+      handleInputChange('defendants', newDefendants);
     }
-  }
+  };
 
   const formattedDefendants = () => {
-    const filledDefendants = defendants.filter(def => def.trim() !== '');
+    const filledDefendants = localDefendants.filter(def => def.trim() !== ''); // Use localDefendants
     switch (filledDefendants.length) {
       case 0: return '';
       case 1: return filledDefendants[0];
@@ -33,7 +55,7 @@ function Section1() {
 
   return (
     <>
-    <MainRow>
+      <MainRow>
         <MainCol>
           <ChildRow>
             <ChildCol>
@@ -42,6 +64,7 @@ function Section1() {
           </ChildRow>
         </MainCol>
       </MainRow>
+  
       <MainRow>
         <MainCol>
           <ChildRow>
@@ -50,13 +73,13 @@ function Section1() {
                 Plaintiff:
                 <input 
                   type="text" 
-                  value={plaintiff} 
-                  onChange={(e) => setPlaintiff(e.target.value)}
+                  value={localPlaintiff}
+                  onChange={(e) => handleInputChange('plaintiff', e.target.value)}
                 />
               </label>
             </ChildCol>
             <ChildCol>
-              {plaintiff}
+              {localPlaintiff} {/* Display localPlaintiff here */}
             </ChildCol>
           </ChildRow>
         </MainCol>
@@ -69,11 +92,11 @@ function Section1() {
               {"Defendants:"}
             </ChildCol>
             <ChildCol>
-              {formattedDefendants()}
+              {formattedDefendants()} {/* This function should use localDefendants */}
             </ChildCol>
           </ChildRow>
-
-          {defendants.map((defendant, index) => (
+  
+          {localDefendants.map((defendant, index) => (
             <ChildRow key={index}>
               <ChildCol>
                 <label>
@@ -86,7 +109,7 @@ function Section1() {
                 </label>
               </ChildCol>
               <ChildCol>
-                {defendant}
+                {defendant} {/* Display each defendant from localDefendants */}
               </ChildCol>
             </ChildRow>
           ))}
@@ -94,6 +117,7 @@ function Section1() {
       </MainRow>
     </>
   );
+  
 }
 
 

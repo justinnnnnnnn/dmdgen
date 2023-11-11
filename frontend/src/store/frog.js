@@ -8,7 +8,8 @@ const SET_FROGS = 'frog/SET_FROGS';
 const REMOVE_FROG = 'frog/REMOVE_FROG';
 const SET_SINGLE_FROG = 'frog/SET_SINGLE_FROG';
 const UPDATE_FROG_FIELD = 'frog/UPDATE_FROG_FIELD';
-
+const SET_FROG_DATA = 'frog/SET_FROG_DATA';
+const SAVE_FROG = 'frog/SAVE_FROG';
 
 
 // Action Creators
@@ -27,9 +28,9 @@ export const setSingleFrog = (frog) => ({
   payload: frog
 });
 
-export const updateFrogField = (field, value) => ({
+export const updateFrogField = (fieldname, value) => ({
   type: UPDATE_FROG_FIELD,
-  payload: { field, value }
+  payload: { fieldname, value }
 });
 
 
@@ -76,13 +77,30 @@ export const createFrog = (frogData) => async (dispatch, getState) => {
   }
 };
 
+export const saveFrog = (frogId, formData) => async (dispatch) => {
+  console.log("Saving frog data:", formData);
+  const response = await csrfFetch(`${API_URL}/${frogId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    // body: JSON.stringify({ data: formData }),
+    body: JSON.stringify({ frog: { data: formData } }),
+  });
+  const data = await response.json();
+  dispatch({
+    type: SAVE_FROG,
+    payload: data
+  });
+};
 
 
 
 
 
 
-const SET_FROG_DATA = 'frog/SET_FROG_DATA';
+
+
 
 // Action Creators
 export const setFrogData = (data) => ({
@@ -118,12 +136,25 @@ const frogReducer = (state = initialState, action) => {
     case UPDATE_FROG_FIELD:
       return {
         ...state,
-        formData: {
-          ...state.formData,
-          [action.payload.field]: action.payload.value
+        currentFrog: {
+          ...state.currentFrog,
+          data: {
+            ...state.currentFrog.data,
+            [action.payload.fieldname]: action.payload.value
+          }
         }
       };
-    // Add other cases for different actions if necessary
+    case SAVE_FROG:
+      const updatedFrogIndex = state.data.findIndex(frog => frog.id === action.payload.id);
+      const updatedFrogs = [...state.data];
+      if(updatedFrogIndex !== -1) {
+        updatedFrogs[updatedFrogIndex] = action.payload;
+      }
+      return {
+        ...state,
+        data: updatedFrogs,
+        currentFrog: action.payload
+      };
     default:
       return state;
   }

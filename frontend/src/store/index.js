@@ -2,23 +2,24 @@
 
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-// import sessionReducer from './session';
-// import searchReducer from './search';
 import frogReducer from './frog';
+import logger from 'redux-logger'
 
 const rootReducer = combineReducers({
-  // session: sessionReducer,
-  // search: searchReducer,
   frog: frogReducer
 });
 
-// Add any additional middleware like 'redux-logger' if not in production
-let enhancer = applyMiddleware(thunk);
 
-// In development, use redux devtools
+let enhancer = applyMiddleware(thunk);
+let middleware = [thunk];
+
+// In development, use redux-logger and devtools
 if (process.env.NODE_ENV !== 'production') {
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-  enhancer = composeEnhancers(enhancer);
+  middleware = [...middleware, logger]; // Add redux-logger to middleware array
+  enhancer = composeEnhancers(applyMiddleware(...middleware));
+} else {
+  enhancer = applyMiddleware(...middleware);
 }
 
 const configureStore = (preloadedState) => {

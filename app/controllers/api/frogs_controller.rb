@@ -47,8 +47,10 @@ class Api::FrogsController < ApplicationController
   
   # Only allow a list of trusted parameters through.
   def frog_params
-    params.require(:frog).permit(:data)
+    # params.require(:frog).permit(:data)
+    params.require(:frog).permit(data: {})
   end
+
   
   # Use callbacks to share common setup or constraints between actions.
   def set_frog
