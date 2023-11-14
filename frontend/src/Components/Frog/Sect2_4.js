@@ -1,12 +1,12 @@
 import React, { useState, useContext } from 'react';
-import { FrogContext } from './Frog';
+// import { FrogContext } from './Frog';
 import MainRow from './MainRow';
 import MainCol from './MainCol';
 import ChildRow from './ChildRow';
 import ChildCol from './ChildCol';
 
 function Section2_4() {
-  const { plaintiff } = useContext(FrogContext);
+  // const { plaintiff } = useContext(FrogContext);
   const [hasOtherPermit, setHasOtherPermit] = useState(false);
   const [permitState, setPermitState] = useState('');
   const [permitNumber, setPermitNumber] = useState('');

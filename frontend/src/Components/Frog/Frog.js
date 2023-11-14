@@ -27,11 +27,8 @@ function Frog() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const frogData = useSelector((state) => state.frog.data);
-  const [isEditing, setIsEditing] = useState(false); //this is something chat added that we'll have to finish later
-  const [plaintiff, setPlaintiff] = useState('');
   const [formData, setFormData] = useState({});
   const currentFrog = useSelector((state) => state.frog.currentFrog);
-  // const formDataToSave = useSelector((state) => state.frog.currentFrog.data);
   
 
   useEffect(() => {
@@ -41,9 +38,6 @@ function Frog() {
   }, [id, dispatch]);
 
   
-
-  
-  // Load the frog data into the local state when the component mounts or when frogData changes
   useEffect(() => {
     if (frogData) {
     setFormData(frogData);
@@ -75,26 +69,24 @@ function Frog() {
   };
 
   return (
-    // <FrogContext.Provider value={{ plaintiff, setPlaintiff }}>
-      <div className="frog-container">
-        <button onClick={handleSaveFrog}>Save Changes</button>
-        <Section>
-          <Section1 />
-          {/* <Section2 /> */}
-          <Section4 />
-          <Section6 />
-          <Section7 />
-          <Section8 />
-          <Section9 />
-          <Section10 />
-          <Section11 />
-          <Section12 />
-          <Section14 />
-          <Section17 />
-          <Section20 />
-        </Section>
-      </div>
-    
+    <div className="frog-container">
+      <button onClick={handleSaveFrog}>Save Changes</button>
+      <Section>
+        <Section1 />
+        <Section2 />
+        <Section4 />
+        <Section6 />
+        <Section7 />
+        <Section8 />
+        <Section9 />
+        <Section10 />
+        <Section11 />
+        <Section12 />
+        <Section14 />
+        <Section17 />
+        <Section20 />
+      </Section>
+    </div>   
   );
 }
 

@@ -33,15 +33,6 @@ function Section1() {
     dispatch(updateFrogField(fieldName, value));
   };
 
-  // const handleDefendantChange = (index, value) => {
-  //   const newDefendants = [...localDefendants]; // Use localDefendants
-  //   newDefendants[index] = value;
-  //   handleInputChange('defendants', newDefendants);
-  //   if (index === newDefendants.length - 1 && value) {
-  //     newDefendants.push('');
-  //     handleInputChange('defendants', newDefendants);
-  //   }
-  // };
 
   const handleDefendantChange = (index, value) => {
     let newDefendants = [...localDefendants];
@@ -66,11 +57,6 @@ function Section1() {
     setLocalDefendants(newDefendants);
     dispatch(updateFrogField('defendants', newDefendants));
   };
-  
-  
-  
-  
-  
   
 
   const formattedDefendants = () => {
@@ -109,7 +95,7 @@ function Section1() {
               </label>
             </ChildCol>
             <ChildCol>
-              {localPlaintiff} {/* Display localPlaintiff here */}
+              {localPlaintiff}
             </ChildCol>
           </ChildRow>
         </MainCol>
@@ -122,7 +108,7 @@ function Section1() {
               {"Defendants:"}
             </ChildCol>
             <ChildCol>
-              {formattedDefendants()} {/* This function should use localDefendants */}
+              {formattedDefendants()}
             </ChildCol>
           </ChildRow>
   
@@ -139,7 +125,7 @@ function Section1() {
                 </label>
               </ChildCol>
               <ChildCol>
-                {defendant} {/* Display each defendant from localDefendants */}
+                {defendant}
               </ChildCol>
             </ChildRow>
           ))}

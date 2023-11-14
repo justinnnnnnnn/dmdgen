@@ -1,14 +1,31 @@
-import React, { useState, useContext } from 'react';
-import { FrogContext } from './Frog';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateFrogField } from '../../store/frog';
 import MainRow from './MainRow';
 import MainCol from './MainCol';
 import ChildRow from './ChildRow';
 import ChildCol from './ChildCol';
 
 function Section2_2() {
-  const { plaintiff } = useContext(FrogContext);
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [locationOfBirth,setLocationOfBirth] = useState('');
+  const dispatch = useDispatch();
+  const currentFrogData = useSelector((state) => state.frog.currentFrog?.data || {});
+  const initialSection2_2Data = currentFrogData.section2_2 || { dateOfBirth: '', locationOfBirth: '' };
+
+  const [localData, setLocalData] = useState(initialSection2_2Data);
+
+  useEffect(() => {
+    if (currentFrogData.section2_2) {
+      setLocalData(currentFrogData.section2_2);
+    } else {
+      setLocalData({ dateOfBirth: '', locationOfBirth: '' });
+    }
+  }, [currentFrogData.section2_2]);
+
+  const handleInputChange = (field, value) => {
+    const updatedData = { ...localData, [field]: value };
+    setLocalData(updatedData); // Update local state
+    dispatch(updateFrogField('section2_2', updatedData)); // Dispatch to Redux
+  };
 
   return (
     <MainRow>
@@ -21,8 +38,8 @@ function Section2_2() {
               Date of Birth:
               <input 
                 type="text" 
-                value={dateOfBirth} 
-                onChange={(e) => setDateOfBirth(e.target.value)}
+                value={localData.dateOfBirth} 
+                onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
               />
             </label>
             <br />
@@ -30,15 +47,15 @@ function Section2_2() {
               Location of Birth:
               <input 
                 type="text" 
-                value={locationOfBirth} 
-                onChange={(e) => setLocationOfBirth(e.target.value)}
+                value={localData.locationOfBirth} 
+                onChange={(e) => handleInputChange('locationOfBirth', e.target.value)}
               />
             </label>
           </ChildCol>
           <ChildCol>
             Response to Request 2.2:
-            {dateOfBirth && locationOfBirth && 
-              ` Plaintiff was born on ${dateOfBirth} in ${locationOfBirth}.`}
+            {localData.dateOfBirth && localData.locationOfBirth && 
+              ` Plaintiff was born on ${localData.dateOfBirth} in ${localData.locationOfBirth}.`}
           </ChildCol>
         </ChildRow>
       </MainCol>

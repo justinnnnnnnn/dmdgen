@@ -1,17 +1,44 @@
-import React, { useState, useContext } from 'react';
-import { FrogContext } from './Frog';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateFrogField } from '../../store/frog';
 import MainRow from './MainRow';
 import MainCol from './MainCol';
 import ChildRow from './ChildRow';
 import ChildCol from './ChildCol';
 
 function Section2_3() {
-  const { plaintiff } = useContext(FrogContext);
-  const [hasLicense, setHasLicense] = useState(false);
-  const [licenseState, setLicenseState] = useState('');
-  const [licenseNumber, setLicenseNumber] = useState('');
-  const [licenseDate, setLicenseDate] = useState('');
-  const [licenseRestrictions, setLicenseRestrictions] = useState('');
+  const dispatch = useDispatch();
+  const currentFrogData = useSelector((state) => state.frog.currentFrog?.data || {});
+  const initialSection2_3Data = currentFrogData.section2_3 || {
+    hasLicense: false,
+    licenseState: '',
+    licenseNumber: '',
+    licenseDate: '',
+    licenseRestrictions: ''
+  };
+
+  const [localData, setLocalData] = useState(initialSection2_3Data);
+
+  useEffect(() => {
+    if (currentFrogData.section2_3) {
+      setLocalData(currentFrogData.section2_3);
+    } else {
+      // Reset to default values if there is no data in the Redux store
+      setLocalData({
+        hasLicense: false,
+        licenseState: '',
+        licenseNumber: '',
+        licenseDate: '',
+        licenseRestrictions: ''
+      });
+    }
+  }, [currentFrogData.section2_3]);
+
+  const handleInputChange = (field, value) => {
+    const updatedData = { ...localData, [field]: value };
+    setLocalData(updatedData);
+    dispatch(updateFrogField('section2_3', updatedData));
+  };
 
   return (
     <MainRow>
@@ -22,47 +49,49 @@ function Section2_3() {
             <br />
             <input 
               type="radio" 
-              checked={!hasLicense} 
-              onChange={() => setHasLicense(false)} 
+              name="hasLicense"
+              checked={!localData.hasLicense} 
+              onChange={() => handleInputChange('hasLicense', false)} 
             /> Plaintiff did not have a driver's license at time of INCIDENT.
             <br />
             <input 
               type="radio" 
-              checked={hasLicense} 
-              onChange={() => setHasLicense(true)} 
+              name="hasLicense"
+              checked={localData.hasLicense} 
+              onChange={() => handleInputChange('hasLicense', true)} 
             /> Yes
-            {hasLicense && (
+            {localData.hasLicense && (
               <>
                 <br />
                 <label>(a) The state or other issuing entity:
                   <input 
                     type="text" 
-                    value={licenseState} 
-                    onChange={(e) => setLicenseState(e.target.value)}
+                    value={localData.licenseState} 
+                    onChange={(e) => handleInputChange('licenseState', e.target.value)}
                   />
                 </label>
                 <br />
                 <label>(b) The license number and type:
                   <input 
                     type="text" 
-                    value={licenseNumber} 
-                    onChange={(e) => setLicenseNumber(e.target.value)}
+                    value={localData.licenseNumber} 
+                    onChange={(e) => handleInputChange('licenseNumber', e.target.value)}
                   />
                 </label>
                 <br />
                 <label>(c) The date of issuance:
                   <input 
                     type="text" 
-                    value={licenseDate} 
-                    onChange={(e) => setLicenseDate(e.target.value)}
+                    value={localData.licenseDate} 
+                    onChange={(e) => handleInputChange('licenseDate', e.target.value)}
                   />
                 </label>
                 <br />
                 <label>(d) All restrictions:
                   <input 
                     type="text" 
-                    value={licenseRestrictions} 
-                    onChange={(e) => setLicenseRestrictions(e.target.value)}
+                    value={localData.licenseRestrictions} 
+                    onChange={(e) => handleInputChange('licenseRestrictions', e.target.value)}
                   />
                 </label>
               </>
@@ -70,12 +99,12 @@ function Section2_3() {
           </ChildCol>
           <ChildCol>
             Response to Request No. 2.3:
-            {hasLicense 
+            {localData.hasLicense 
               ? <>
-                  <p>a) {licenseState}</p>
-                  <p>b) {licenseNumber}</p>
-                  <p>c) {licenseDate}</p>
-                  <p>d) {licenseRestrictions}</p>
+                  <p>a) {localData.licenseState}</p>
+                  <p>b) {localData.licenseNumber}</p>
+                  <p>c) {localData.licenseDate}</p>
+                  <p>d) {localData.licenseRestrictions}</p>
                 </>
               : 'Plaintiff did not have a driver’s license at the time of the INCIDENT.'
             }

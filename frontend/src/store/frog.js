@@ -13,6 +13,11 @@ const SAVE_FROG = 'frog/SAVE_FROG';
 
 
 // Action Creators
+export const setFrogData = (data) => ({
+  type: SET_FROG_DATA,
+  payload: data
+});
+
 export const setFrogs = (frogs) => ({
   type: SET_FROGS,
   payload: frogs
@@ -93,20 +98,6 @@ export const saveFrog = (frogId, formData) => async (dispatch) => {
     payload: data
   });
 };
-
-
-
-
-
-
-
-
-
-// Action Creators
-export const setFrogData = (data) => ({
-  type: SET_FROG_DATA,
-  payload: data
-});
 
 // Initial State
 const initialState = {
