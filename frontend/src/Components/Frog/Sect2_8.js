@@ -1,33 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateFrogField } from '../../store/frog';
 import MainRow from './MainRow';
 import MainCol from './MainCol';
 import ChildRow from './ChildRow';
 import ChildCol from './ChildCol';
 
 function Sect2_8() {
-  const [hasFelonyConviction, setHasFelonyConviction] = useState(null);
-  const [convictions, setConvictions] = useState([
-    { city: '', state: '', date: '', offense: '', court: '', caseNumber: '' },
-  ]);
+  const dispatch = useDispatch();
+  const currentFrogData = useSelector((state) => state.frog.currentFrog?.data || {});
+  const initialSection2_8Data = currentFrogData.section2_8 || {
+    hasFelonyConviction: null,
+    convictions: [{ city: '', state: '', date: '', offense: '', court: '', caseNumber: '' }]
+  };
+
+  const [localData, setLocalData] = useState(initialSection2_8Data);
+
+  useEffect(() => {
+    if (currentFrogData.section2_8) {
+      setLocalData(currentFrogData.section2_8);
+    } else {
+      // Reset to default values if there is no data in the Redux store
+      setLocalData({
+        hasFelonyConviction: null,
+        convictions: [{ city: '', state: '', date: '', offense: '', court: '', caseNumber: '' }]
+      });
+    }
+  }, [currentFrogData.section2_8]);
+
+  const handleInputChange = (field, value) => {
+    const updatedData = { ...localData, [field]: value };
+    setLocalData(updatedData); // Update local state
+    dispatch(updateFrogField('section2_8', updatedData)); // Dispatch to Redux
+  };
 
   const handleConvictionChange = (index, key, value) => {
-    const updatedConvictions = [...convictions];
+    let updatedConvictions = [...localData.convictions];
     updatedConvictions[index][key] = value;
-    setConvictions(updatedConvictions);
-
     if (index === updatedConvictions.length - 1) {
-      setConvictions([
-        ...updatedConvictions,
-        { city: '', state: '', date: '', offense: '', court: '', caseNumber: '' },
-      ]);
+      updatedConvictions.push({ city: '', state: '', date: '', offense: '', court: '', caseNumber: '' });
     }
+    handleInputChange('convictions', updatedConvictions);
   };
 
   const renderConvictionsResponse = () => {
-    if (hasFelonyConviction === false) {
+    if (localData.hasFelonyConviction === false) {
       return "No";
-    } else if (hasFelonyConviction) {
-      return convictions.map((conviction, index) => {
+    } else if (localData.hasFelonyConviction) {
+      return localData.convictions.map((conviction, index) => {
         if (conviction.city && conviction.state && conviction.date && conviction.offense && conviction.court && conviction.caseNumber) {
           return `Plaintiff was convicted in ${conviction.city}, ${conviction.state}, on ${conviction.date} for ${conviction.offense}, at ${conviction.court}, case number ${conviction.caseNumber}. `;
         }
@@ -47,20 +67,22 @@ function Sect2_8() {
             <label>
               <input
                 type="radio"
-                checked={hasFelonyConviction === false}
-                onChange={() => setHasFelonyConviction(false)}
+                name="hasFelonyConviction"
+                checked={localData.hasFelonyConviction === false}
+                onChange={() => handleInputChange('hasFelonyConviction', false)}
               /> No
             </label>
             <br />
             <label>
               <input
                 type="radio"
-                checked={hasFelonyConviction === true}
-                onChange={() => setHasFelonyConviction(true)}
+                name="hasFelonyConviction"
+                checked={localData.hasFelonyConviction === true}
+                onChange={() => handleInputChange('hasFelonyConviction', true)}
               /> Yes
             </label>
-            {hasFelonyConviction && (
-              convictions.map((conviction, index) => (
+            {localData.hasFelonyConviction && (
+              localData.convictions.map((conviction, index) => (
                 <div key={index}>
                   <label>a) City and State: 
                     <input

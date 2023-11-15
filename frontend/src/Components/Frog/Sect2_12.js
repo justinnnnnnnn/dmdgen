@@ -1,37 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateFrogField } from '../../store/frog';
 import MainRow from './MainRow';
 import MainCol from './MainCol';
 import ChildRow from './ChildRow';
 import ChildCol from './ChildCol';
 
 function Sect2_12() {
-  const [disabilities, setDisabilities] = useState([]);
-  const [showDefault, setShowDefault] = useState(true);
+  const dispatch = useDispatch();
+  const currentFrogData = useSelector((state) => state.frog.currentFrog?.data || {});
+  const initialDisabilities = currentFrogData.section2_12?.disabilities || [{ person: '', address: '', phoneNumber: '', natureOfDisability: '', mannerOfContribution: '' }];
+
+  const [localData, setLocalData] = useState({ disabilities: initialDisabilities });
+
+  useEffect(() => {
+    if (currentFrogData.section2_12) {
+      setLocalData(currentFrogData.section2_12);
+    }
+  }, [currentFrogData.section2_12]);
 
   const addDisability = () => {
-    setDisabilities([
-      ...disabilities,
-      { person: '', address: '', phoneNumber: '', natureOfDisability: '', mannerOfContribution: '' }
-    ]);
-    setShowDefault(false);
+    const newDisabilities = [...localData.disabilities, { person: '', address: '', phoneNumber: '', natureOfDisability: '', mannerOfContribution: '' }];
+    setLocalData({ ...localData, disabilities: newDisabilities });
+    dispatch(updateFrogField('section2_12', { ...localData, disabilities: newDisabilities }));
   };
 
   const updateDisability = (index, field, value) => {
-    const updatedDisabilities = disabilities.map((disability, i) => {
+    const updatedDisabilities = localData.disabilities.map((disability, i) => {
       if (i === index) {
         return { ...disability, [field]: value };
       }
       return disability;
     });
-    setDisabilities(updatedDisabilities);
+
+    setLocalData({ ...localData, disabilities: updatedDisabilities });
+    dispatch(updateFrogField('section2_12', { ...localData, disabilities: updatedDisabilities }));
   };
 
   const renderResponse = () => {
-    if (showDefault) {
+    if (localData.showDefault) {
       return "Not to Plaintiff's knowledge.";
     }
 
-    return disabilities.map((disability, index) => (
+    return localData.disabilities.map((disability, index) => (
       <div key={index}>
         {disability.person}, {disability.address}. {disability.phoneNumber}, with {disability.natureOfDisability} {disability.mannerOfContribution}
       </div>
@@ -43,10 +54,12 @@ function Sect2_12() {
       <MainCol>
         <ChildRow>
           <ChildCol>
-            2.12 At the time of INCIDENT did you or any other person have any disabilities or conditions that may have contributed to incident occurring?
-            {disabilities.map((disability, index) => (
+            <div>
+              2.12 At the time of INCIDENT did you or any other person have any disabilities or conditions that may have contributed to incident occurring?
+              <button type="button" onClick={addDisability}>Add Person</button>
+            </div>
+            {localData.disabilities.map((disability, index) => (
               <div key={index}>
-                <br />
                 <label>
                   Person:
                   <input
@@ -93,15 +106,10 @@ function Sect2_12() {
                 </label>
               </div>
             ))}
-            <button type="button" onClick={addDisability}>
-              Add Person
-            </button>
           </ChildCol>
           <ChildCol>
             Response to Request No. 2.12:
-            <div>
-              {renderResponse()}
-            </div>
+            <div>{renderResponse()}</div>
           </ChildCol>
         </ChildRow>
       </MainCol>
@@ -109,4 +117,4 @@ function Sect2_12() {
   );
 }
 
-export default Sect2_12;
+export default Sect2_12;  

@@ -1,21 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateFrogField } from '../../store/frog';
 import MainRow from './MainRow';
 import MainCol from './MainCol';
 import ChildRow from './ChildRow';
 import ChildCol from './ChildCol';
 
 function Sect2_11() {
-  const [isAgentOrEmployee, setIsAgentOrEmployee] = useState(null);
-  const [employer, setEmployer] = useState('');
-  const [address, setAddress] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [activity, setActivity] = useState('');
+  const dispatch = useDispatch();
+  const currentFrogData = useSelector((state) => state.frog.currentFrog?.data || {});
+  const initialSection2_11Data = currentFrogData.section2_11 || {
+    isAgentOrEmployee: null,
+    employer: '',
+    address: '',
+    phoneNumber: '',
+    activity: ''
+  };
+
+  const [localData, setLocalData] = useState(initialSection2_11Data);
+
+  useEffect(() => {
+    if (currentFrogData.section2_11) {
+      setLocalData(currentFrogData.section2_11);
+    } else {
+      // Reset to default values if there is no data in the Redux store
+      setLocalData({
+        isAgentOrEmployee: null,
+        employer: '',
+        address: '',
+        phoneNumber: '',
+        activity: ''
+      });
+    }
+  }, [currentFrogData.section2_11]);
+
+  const handleInputChange = (field, value) => {
+    const updatedData = { ...localData, [field]: value };
+    setLocalData(updatedData);
+    dispatch(updateFrogField('section2_11', updatedData));
+  };
 
   const renderResponse = () => {
-    let response = isAgentOrEmployee ? 'Yes.' : 'No.';
+    let response = localData.isAgentOrEmployee ? 'Yes.' : 'No.';
 
-    if (isAgentOrEmployee) {
-      response += ` Plaintiff was working for ${employer} at ${address}, ${phoneNumber}, ${activity}`;
+    if (localData.isAgentOrEmployee) {
+      response += ` Plaintiff was working for ${localData.employer} at ${localData.address}, ${localData.phoneNumber}, ${localData.activity}`;
     }
 
     return response;
@@ -31,27 +60,29 @@ function Sect2_11() {
             <label>
               <input
                 type="radio"
-                checked={isAgentOrEmployee === false}
-                onChange={() => setIsAgentOrEmployee(false)}
+                name="isAgentOrEmployee"
+                checked={localData.isAgentOrEmployee === false}
+                onChange={() => handleInputChange('isAgentOrEmployee', false)}
               /> No
             </label>
             <br />
             <label>
               <input
                 type="radio"
-                checked={isAgentOrEmployee === true}
-                onChange={() => setIsAgentOrEmployee(true)}
+                name="isAgentOrEmployee"
+                checked={localData.isAgentOrEmployee === true}
+                onChange={() => handleInputChange('isAgentOrEmployee', true)}
               /> Yes
             </label>
-            {isAgentOrEmployee && (
+            {localData.isAgentOrEmployee && (
               <>
                 <br />
                 <label>
                   Employer:
                   <input
                     type="text"
-                    value={employer}
-                    onChange={(e) => setEmployer(e.target.value)}
+                    value={localData.employer}
+                    onChange={(e) => handleInputChange('employer', e.target.value)}
                   />
                 </label>
                 <br />
@@ -59,8 +90,8 @@ function Sect2_11() {
                   Address:
                   <input
                     type="text"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
+                    value={localData.address}
+                    onChange={(e) => handleInputChange('address', e.target.value)}
                   />
                 </label>
                 <br />
@@ -68,8 +99,8 @@ function Sect2_11() {
                   Phone Number:
                   <input
                     type="text"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    value={localData.phoneNumber}
+                    onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                   />
                 </label>
                 <br />
@@ -77,8 +108,8 @@ function Sect2_11() {
                   Activity:
                   <input
                     type="text"
-                    value={activity}
-                    onChange={(e) => setActivity(e.target.value)}
+                    value={localData.activity}
+                    onChange={(e) => handleInputChange('activity', e.target.value)}
                   />
                 </label>
               </>
@@ -87,7 +118,7 @@ function Sect2_11() {
           <ChildCol>
             Response to Request No. 2.11:
             <div>
-              {isAgentOrEmployee !== null && renderResponse()}
+              {localData.isAgentOrEmployee !== null && renderResponse()}
             </div>
           </ChildCol>
         </ChildRow>

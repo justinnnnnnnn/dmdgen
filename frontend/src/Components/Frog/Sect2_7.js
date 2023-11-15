@@ -1,26 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateFrogField } from '../../store/frog';
 import MainRow from './MainRow';
 import MainCol from './MainCol';
 import ChildRow from './ChildRow';
 import ChildCol from './ChildCol';
 
 function Sect2_7() {
-  const [highestLevel, setHighestLevel] = useState('');
-  const [degree, setDegree] = useState('');
-  const [schools, setSchools] = useState([{ school: '', address: '', dates: '' }]);
+  const dispatch = useDispatch();
+  const currentFrogData = useSelector((state) => state.frog.currentFrog?.data || {});
+  const initialSection2_7Data = currentFrogData.section2_7 || {
+    highestLevel: '',
+    degree: '',
+    schools: [{ school: '', address: '', dates: '' }]
+  };
+
+  const [localData, setLocalData] = useState(initialSection2_7Data);
+
+  useEffect(() => {
+    if (currentFrogData.section2_7) {
+      setLocalData(currentFrogData.section2_7);
+    } else {
+      setLocalData({
+        highestLevel: '',
+        degree: '',
+        schools: [{ school: '', address: '', dates: '' }]
+      });
+    }
+  }, [currentFrogData.section2_7]);
+
+  const handleInputChange = (field, value) => {
+    const updatedData = { ...localData, [field]: value };
+    setLocalData(updatedData); // Update local state
+    dispatch(updateFrogField('section2_7', updatedData)); // Dispatch to Redux
+  };
 
   const handleSchoolChange = (index, key, value) => {
-    const updatedSchools = [...schools];
+    let updatedSchools = [...localData.schools];
     updatedSchools[index][key] = value;
-    setSchools(updatedSchools);
-
-    if (index === updatedSchools.length - 1) {
-      setSchools([...updatedSchools, { school: '', address: '', dates: '' }]);
+    if (index === updatedSchools.length - 1 && value) {
+      updatedSchools = [...updatedSchools, { school: '', address: '', dates: '' }];
     }
+    handleInputChange('schools', updatedSchools);
   };
 
   const renderSchoolsResponse = () => {
-    return schools.map((school, index) => {
+    return localData.schools.map((school, index) => {
       if (!school.school && !school.address && !school.dates) {
         return null;
       }
@@ -31,7 +56,7 @@ function Sect2_7() {
   };
 
   const renderHighestLevelResponse = () => {
-    return `Plaintiff has completed ${highestLevel}${degree ? `, receiving a ${degree}` : ''}.`;
+    return `Plaintiff has completed ${localData.highestLevel}${localData.degree ? `, receiving a ${localData.degree}` : ''}.`;
   };
 
   return (
@@ -44,20 +69,20 @@ function Sect2_7() {
             <label>Highest Level of School Completed:
               <input 
                 type="text" 
-                value={highestLevel} 
-                onChange={(e) => setHighestLevel(e.target.value)}
+                value={localData.highestLevel} 
+                onChange={(e) => handleInputChange('highestLevel', e.target.value)}
               />
             </label>
             <br />
             <label>Degree Received (if any):
               <input 
                 type="text" 
-                value={degree} 
-                onChange={(e) => setDegree(e.target.value)}
+                value={localData.degree} 
+                onChange={(e) => handleInputChange('degree', e.target.value)}
               />
             </label>
             <br />
-            {schools.map((school, index) => (
+            {localData.schools.map((school, index) => (
               <div key={index}>
                 <label>School Name:
                   <input 

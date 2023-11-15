@@ -1,47 +1,59 @@
-// Section2_5.js
-import React, { useState } from 'react';
+// Sect2_5.js
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateFrogField } from '../../store/frog';
 import MainRow from './MainRow';
 import MainCol from './MainCol';
 import ChildRow from './ChildRow';
 import ChildCol from './ChildCol';
 
 function Section2_5() {
-  const [presentAddressSinceDate, setPresentAddressSinceDate] = useState('');
-  const [presentAddress, setPresentAddress] = useState('');
-  const [pastAddresses, setPastAddresses] = useState([{ address: '', fromDate: '', toDate: '' }]);
+  const dispatch = useDispatch();
+  const currentFrogData = useSelector((state) => state.frog.currentFrog?.data || {});
+  const initialSection2_5Data = currentFrogData.section2_5 || {
+    presentAddressSinceDate: '',
+    presentAddress: '',
+    pastAddresses: [{ address: '', fromDate: '', toDate: '' }]
+  };
+
+  const [localData, setLocalData] = useState(initialSection2_5Data);
+
+  useEffect(() => {
+    if (currentFrogData.section2_5) {
+      setLocalData(currentFrogData.section2_5);
+    } else {
+      setLocalData({
+        presentAddressSinceDate: '',
+        presentAddress: '',
+        pastAddresses: [{ address: '', fromDate: '', toDate: '' }]
+      });
+    }
+  }, [currentFrogData.section2_5]);
+
+  const handleInputChange = (field, value) => {
+    const updatedData = { ...localData, [field]: value };
+    setLocalData(updatedData);
+    dispatch(updateFrogField('section2_5', updatedData));
+  };
 
   const handlePastAddressChange = (index, key, value) => {
-    const updatedAddresses = [...pastAddresses];
+    let updatedAddresses = [...localData.pastAddresses];
     updatedAddresses[index][key] = value;
-    setPastAddresses(updatedAddresses);
-  
     if (index === updatedAddresses.length - 1 && key === 'fromDate' && value) {
-      setPastAddresses([...updatedAddresses, { address: '', fromDate: '', toDate: '' }]);
+      updatedAddresses = [...updatedAddresses, { address: '', fromDate: '', toDate: '' }];
     }
+    handleInputChange('pastAddresses', updatedAddresses);
   };
 
   const renderAddressesResponse = () => {
-    if (!presentAddress || !presentAddressSinceDate) {
-      return "";
-    }
-
-    let response = `a-c) Plaintiff's current address is ${presentAddress} and has lived there since ${presentAddressSinceDate}. `;
+    let response = `a-c) Plaintiff's current address is ${localData.presentAddress} and has lived there since ${localData.presentAddressSinceDate}. `;
   
-    if (pastAddresses.length > 0) {
-      for (let i = 0; i < pastAddresses.length; i++) {
-        const currentAddress = pastAddresses[i];
-        if (!currentAddress.address || !currentAddress.fromDate) {
-          continue; // Skip this iteration if the address or fromDate is missing
-        }
-
-        const previousAddress = pastAddresses[i - 1] || { fromDate: presentAddressSinceDate };
-        if (!previousAddress.fromDate) {
-          continue; // Skip this iteration if the previous fromDate is missing
-        }
-      
-        response += `Plaintiff lived at ${currentAddress.address} from ${currentAddress.fromDate} to ${previousAddress.fromDate}. `;
+    localData.pastAddresses.forEach((address, index) => {
+      if (address.address && address.fromDate) {
+        const toDate = index > 0 ? localData.pastAddresses[index - 1].fromDate : localData.presentAddressSinceDate;
+        response += `Plaintiff lived at ${address.address} from ${address.fromDate} to ${toDate}. `;
       }
-    }
+    });
 
     return response.trim();
   };
@@ -55,43 +67,34 @@ function Section2_5() {
             <br />
             <label>(a) Your present residence ADDRESS:
               <input 
-                  type="text" 
-                  value={presentAddress} 
-                  onChange={(e) => setPresentAddress(e.target.value)}
+                type="text" 
+                value={localData.presentAddress} 
+                onChange={(e) => handleInputChange('presentAddress', e.target.value)}
               />
               <input 
-                  type="text" 
-                  placeholder="Since Date"
-                  value={presentAddressSinceDate} 
-                  onChange={(e) => setPresentAddressSinceDate(e.target.value)}
+                type="text" 
+                placeholder="Since Date"
+                value={localData.presentAddressSinceDate} 
+                onChange={(e) => handleInputChange('presentAddressSinceDate', e.target.value)}
               />
             </label>
             <br />
             <label>(b) Your residence ADDRESSES for the past five years:</label>
-            {pastAddresses.map((pastAddress, index) => (
-                <div key={index}>
-                    <input 
-                        type="text" 
-                        placeholder="Address"
-                        value={pastAddress.address} 
-                        onChange={(e) => handlePastAddressChange(index, 'address', e.target.value)}
-                    />
-                    {index === 0 ? (
-                        <input 
-                            type="text" 
-                            placeholder="Since Date"
-                            value={pastAddress.fromDate} 
-                            onChange={(e) => handlePastAddressChange(index, 'fromDate', e.target.value)}
-                        />
-                    ) : (
-                        <input 
-                            type="text" 
-                            placeholder="Until Date"
-                            value={pastAddress.fromDate} 
-                            onChange={(e) => handlePastAddressChange(index, 'fromDate', e.target.value)}
-                        />
-                    )}
-                </div>
+            {localData.pastAddresses.map((pastAddress, index) => (
+              <div key={index}>
+                <input 
+                  type="text" 
+                  placeholder="Address"
+                  value={pastAddress.address} 
+                  onChange={(e) => handlePastAddressChange(index, 'address', e.target.value)}
+                />
+                <input 
+                  type="text" 
+                  placeholder={index === 0 ? "Since Date" : "Until Date"}
+                  value={pastAddress.fromDate} 
+                  onChange={(e) => handlePastAddressChange(index, 'fromDate', e.target.value)}
+                />
+              </div>
             ))}
           </ChildCol>
           <ChildCol>

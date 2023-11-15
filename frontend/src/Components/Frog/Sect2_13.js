@@ -1,37 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateFrogField } from '../../store/frog';
 import MainRow from './MainRow';
 import MainCol from './MainCol';
 import ChildRow from './ChildRow';
 import ChildCol from './ChildCol';
 
 function Sect2_13() {
-  const [substanceUse, setSubstanceUse] = useState([]);
-  const [showDefault, setShowDefault] = useState(true);
+  const dispatch = useDispatch();
+  const currentFrogData = useSelector((state) => state.frog.currentFrog?.data || {});
+  const initialSubstanceUse = currentFrogData.section2_13?.substanceUse || [{ person: '', address: '', phoneNumber: '', substance: '', location: '', time: '', presentPeople: '', prescribedBy: '', reason: '' }];
+
+  const [localData, setLocalData] = useState({ substanceUse: initialSubstanceUse });
+
+  useEffect(() => {
+    if (currentFrogData.section2_13) {
+      setLocalData(currentFrogData.section2_13);
+    }
+  }, [currentFrogData.section2_13]);
 
   const addSubstanceUse = () => {
-    setSubstanceUse([
-      ...substanceUse,
-      { person: '', address: '', phoneNumber: '', substance: '', location: '', time: '', presentPeople: '', prescribedBy: '', reason: '' }
-    ]);
-    setShowDefault(false);
+    const newSubstanceUse = [...localData.substanceUse, { person: '', address: '', phoneNumber: '', substance: '', location: '', time: '', presentPeople: '', prescribedBy: '', reason: '' }];
+    setLocalData({ ...localData, substanceUse: newSubstanceUse });
+    dispatch(updateFrogField('section2_13', { ...localData, substanceUse: newSubstanceUse }));
   };
 
   const updateSubstanceUse = (index, field, value) => {
-    const updatedSubstanceUse = substanceUse.map((entry, i) => {
+    const updatedSubstanceUse = localData.substanceUse.map((entry, i) => {
       if (i === index) {
         return { ...entry, [field]: value };
       }
       return entry;
     });
-    setSubstanceUse(updatedSubstanceUse);
+
+    setLocalData({ ...localData, substanceUse: updatedSubstanceUse });
+    dispatch(updateFrogField('section2_13', { ...localData, substanceUse: updatedSubstanceUse }));
   };
 
   const renderResponse = () => {
-    if (showDefault) {
-      return "Plaintiff does not recall taking or using any drugs, alcohol, or medications before the INCIDENT.";
-    }
-
-    return substanceUse.map((entry, index) => {
+    return localData.substanceUse.map((entry, index) => {
       if (Object.values(entry).some(v => v !== '')) {
         return (
           <div key={index}>
@@ -52,7 +59,7 @@ function Sect2_13() {
         <ChildRow>
           <ChildCol>
             2.13 Within 24 hours before the INCIDENT did you or any person involved in the INCIDENT use or take any of the following substances: alcoholic beverage, marijuana, or other drug or medication of any kind (prescription or not)?
-            {substanceUse.map((entry, index) => (
+            {localData.substanceUse.map((entry, index) => (
               <div key={index}>
                 <br />
                 <label>
@@ -151,6 +158,7 @@ function Sect2_13() {
       </MainCol>
     </MainRow>
   );
+  
 }
 
 export default Sect2_13;
